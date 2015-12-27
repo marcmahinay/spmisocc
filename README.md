@@ -1,2 +1,2 @@
 # spmisocc
-SP Misamis Occidental
+Sangguniang Panlalawigan of Misamis Occidental
