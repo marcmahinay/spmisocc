@@ -28,3 +28,91 @@
 
  $type=EventType::find($id);
  $type->delete();
+
+2.) 
+ 
+<li class="nk-tb-action-hidden">
+     <a href="#" class="btn btn-sm btn-icon btn-trigger delete-document" data-id="{{$document->id}}" data-toggle="tooltip" data-placement="top" title="Delete">
+       <em class="icon ni ni-delete"></em>
+       @csrf
+     </a>
+</li>
+ 
+ <form id="frm-delete-{{$document->id}}" action="{{ route('documents.delete',$document->id)}}" method="POST" style="display: none;">
+       @method('PUT')
+       @csrf
+ </form>
+ 
+ $(".delete-document").on('click', function (e) {
+            var id = $(this).data('id');
+            e.preventDefault();
+            swal({
+                title: "Suppression",
+            text: "Veuillez confirmer la suppression",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Confirmer",
+            cancelButtonText: "Annuler",
+            }).then((result) => {
+                if(result) {
+                    $("#frm-delete"+id).submit();
+                }
+            }
+        )
+            ;
+        });
+   
+   public function destroy($id)
+   {
+      $document = Document::find($id);
+      $document->delete();
+   }
+   
+ 
+3.) 
+ $(".delete-document").on('click', function (e) {
+            
+            e.preventDefault();
+    swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this imaginary file!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, delete it!",
+        closeOnConfirm: false
+    }, function (isConfirm) {
+        if (!isConfirm) return;
+        var _token = $("input[name='_token']").val();
+        var id = $(this).data('id');
+        url = '{{ route("documents.delete",":id") }}';
+        url = url.replace(':id', id);
+            
+        $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });         
+            
+        $.ajax({
+            url: url,
+            type: 'post',
+            datatype: 'json',
+            data: {_token:_token, id:id},
+            success: function () {
+                swal("Done!", "It was succesfully deleted!", "success");
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                swal("Error deleting!", "Please try again", "error");
+            }
+        });
+    });
+}
+   
+                                
+                                
+                                
+                                
+                                
+                                
+                                
